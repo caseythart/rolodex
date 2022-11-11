@@ -1,0 +1,19 @@
+############# APPLICATION QUERIES
+
+## Get all meetings with a given person, ordered by date.
+
+
+
+## Find people that I haven't met with as often as I've indicated I should.
+
+
+
+############# INTEGRITY QUERIES
+
+## Missing Emails
+
+
+## Missing Phone
+
+
+## Missing Address

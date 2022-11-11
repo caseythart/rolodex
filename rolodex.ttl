@@ -1,0 +1,472 @@
+@prefix : <http:www.rolodexontology/#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix skosxl: <http://www.w3.org/2008/05/skos-xl#> .@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix skosxl: <http://www.w3.org/2008/05/skos-xl#> .
+<http:www.rolodexontology/#> a owl:Ontology;
+	rdfs:commment "This ontology is used to manage an address book that also emphasizes when, how, and why you interact with those contacts." ;
+.
+#################################################################
+#    Classes
+#################################################################
+
+:Agent a owl:Class ;
+	rdfs:label "agent"^^xsd:string ;
+        skos:prefLabel "agent"@en ;
+	rdfs:subClassOf owl:Thing ;
+	rdfs:comment """:Agent is the class of all things capable of acting. The main notable subclasses are :Person and :Organization. Also, most nonhuman animals would count as agents, even if they are not counted as persons.
+The potentially controversial edgecase is artificial intelligence 'agents', such as robots and computer programs, which do not qualify. They would be merely :Artifacts instead. Were such artificial entities able to attain sentience, they would qualify for this class, though."""^^xsd:string ;
+        :exampleSubclass :Person, :Organization ;
+        :exampleInstance "Barack Obama", "World Health Organization", "Seattle Mariners", "Casey Hart" ;
+.
+
+:Employment a owl:Class ;
+	rdfs:label "employment"^^xsd:string ;
+        skos:prefLabel "employment"@en ;
+	rdfs:subClassOf :Event ;
+	rdfs:comment """:Employment is the class of all events in which a single person is employed by some agent. It should have a start and end time (unless the employment is ongoing), employer, employee, and job title.
+
+The only real difficulty here are cases where a person might have a single employement with multiple job titles due to, say, promotion. In such cases, one can either break them into multiple employment events, or preferably they can have a single umbrella employment event with multiple subevents that are split into these phases."""^^xsd:string ;
+        :exampleSubclass "";
+        :exampleInstance "";
+.
+
+:Event a owl:Class ;
+	rdfs:label "event"^^xsd:string ;
+        skos:prefLabel "event"@en ;
+	rdfs:subClassOf :Situation ;
+	rdfs:comment """:Event is the class of all things that happen. They are usually distinguished by their temporal extent (see :startTime, :endTime, and such), what happened (often described by picking the appropriate subclsas), and the various things that were involved in the event (see :situationInvolves and its subproperties)."""^^xsd:string ;
+        :exampleSubclass "";
+        :exampleInstance "";
+.
+
+:FamilialRelationship a owl:Class ;
+	rdfs:label "familial relationship"^^xsd:string ;
+        skos:prefLabel "family relationship"@en ;
+	rdfs:subClassOf :Relationship ;
+	rdfs:comment """:FamilialRelationship is the class of all family relationships. Such relationships may lack a start date and/or end date, in which case they are assumed to hold as long as the two parties are alive. However, in cases of familial relations due to marriage (e.g. sister-in-laws) one should include the start date (as well as end dates, if applicable."""^^xsd:string ;
+        :exampleSubclass "";
+        :exampleInstance "";
+.
+
+:Friendship a owl:Class ;
+	rdfs:label "friendship"^^xsd:string ;
+        skos:prefLabel "friendship"@en ;
+	rdfs:subClassOf :Relationship ;
+	rdfs:comment """:Friendship is the class of all relationships that are friendships."""^^xsd:string ;
+.
+
+:Meeting a owl:Class ;
+	rdfs:label "meeting"^^xsd:string ;
+        skos:prefLabel "meeting"@en ;
+	rdfs:subClassOf :Event ;
+	rdfs:comment """:Meeting is the class of all events in which two or more parties meet, either in person (see :Meeting-InPerson) or virtually (see :Meeting-Virtual). Note that meeting is not a subclass of """^^xsd:string ;
+        :exampleSubclass "";
+        :exampleInstance "";
+.
+
+:Meeting-Hybrid a owl:Class ;
+       rdfs:label "hybrid meeting"@en ;
+       skos:prefLabel  "hybrid meeting"@en ;
+       skos:altLabel "virtual and in person meeting"@en ;
+       rdfs:subClassOf :Meeting ;
+       rdfs:comment """:Meeting-Hybrid is the class of all meetings in which at least one participant is virtual and at least two participants are interacting in the same location. For distinguishing features from :Meeting-InPerson and :Meeting-Virtual, see the rdfs:comment there.""" ;
+.
+
+:Meeting-InPerson a owl:Class ;
+       rdfs:label "in person meeting"@en ;
+       skos:prefLabel  "in person meeting"@en ;
+       rdfs:subClassOf :Meeting ;
+       rdfs:comment """:Meeting-InPerson is the class of all meetings in which the participants interact in the same location.
+
+This class is intuitive, but it might bear distinguishing some edge cases. Suppose two people play a video game together virtually. Then, they will be said to have a virtual meeting, of course. But what if they come to the same location (e.g. two different rooms in the same house) and have a meeting that is otherwise indistinguishable from a meeting they could have from across the country using the internet. In such a case, the meeting is still virtual. In person meetings must make the fact that the parties were at the same location salient.
+
+Moreover, at some level of generality, you could argue that every meeting is held at the same physical location, even if we have to describe the location as :TheUniverse or some such wide locale. While at first it seems like we can define our way out of such a problem, some light reflection makes me worried that we cannot. But the worry is not serious: if someone has an aberrant intuition about whether a meeting was in person or not, I can't imagine the consequences of that failure to communicate having dire consequences.""" ;
+.
+
+:Meeting-Virtual a owl:Class ;
+       rdfs:label "virtual meeting"@en ;
+       skos:prefLabel  "virtual meeting"@en ;
+       rdfs:subClassOf :Meeting ;
+       rdfs:comment """:Meeting-Virtual is the class of all meetings in which the participants interact virtually, such as through Zoom or a video game. For distinguishing features from :Meeting-InPerson, see the rdfs:comment there.""" ;
+.
+
+:Organization a owl:Class ;
+	rdfs:label "organization"^^xsd:string ;
+        skos:prefLabel "organization"@en ;
+	rdfs:subClassOf :Agent ;
+	rdfs:comment """:Organization is the class of all group agents. An organization must be composed of one or more persons (see :Person). However, an organization is not identical to the collection of persons that constitute it, as the organization can persist through changes in membership. The Seattle Mariners are still the same organization despite Lou Pinella no longer being the manager.
+Common types of organizations include governments, sports organizations, clubs, and companies."""^^xsd:string ;
+        :exampleSubclass :Government;
+        :exampleInstance "Seattle Mariners", "1Texas State Government", "World Health Organization" ;
+.
+
+:Person a owl:Class ;
+	rdfs:label "person"^^xsd:string ;
+	rdfs:subClassOf :Agent ;
+        skos:prefLabel "person"@en ;
+	rdfs:subClassOf owl:Thing ;
+	rdfs:comment """:Person is the class of all people. Nothing controversial is meant here about artificial persons or personhood. For the purposes of this ontology, we will want to have instances that are humans one has (or wants to) make contact with. Subclasses are more contentious. Suffice to say that you should be careful in creating subclasses: maybe you should consider a class of occupations to relate a given person to rather than calling a person an instance, of say, :Doctor (where :Doctor is a subclass of :Person)."""^^xsd:string ;
+.
+
+:Place a owl:Class ;
+	rdfs:label "place"^^xsd:string ;
+        skos:prefLabel "place"@en ;
+	rdfs:subClassOf owl:Thing ;
+	rdfs:comment """:Place is the class of all locations, which can be thought of the answers to 'Where?' questions, or things that can be the object of the preposition 'at'. This is a very general class, and it includes both virtual (see :VirtualPlace) and physical (see :PhysicalPlace) locations."""^^xsd:string ;
+        :exampleSubclass "";
+        :exampleInstance "";
+.
+
+:Relationship a owl:Class ;
+	rdfs:label "relationship"^^xsd:string ;
+        skos:prefLabel "relationship"@en ;
+	rdfs:subClassOf :Situation ;
+	rdfs:comment """:Relationship is the class of all reified relationships between parties. Every relationship should have exactly two distinct agents that stand in said relationship. Examples would include marriages, friendships, business partnerships, and familial relationships. """^^xsd:string ;
+        :exampleSubclass "";
+        :exampleInstance "";
+.
+
+:Situation a owl:Class ;
+	rdfs:label "situation"^^xsd:string ;
+        skos:prefLabel "situation"@en ;
+	rdfs:subClassOf owl:Thing ;
+	rdfs:comment """:Situation is the class of all states and events. This is a tricky class, and this comment should be updated with more nuance in the future."""^^xsd:string ;
+.
+
+:TimeInterval a owl:Class ;
+	rdfs:label "time interval"^^xsd:string ;
+        skos:prefLabel "time interval"@en ;
+	rdfs:subClassOf owl:Thing ;
+	rdfs:comment """:TimeInterval is the class of all periods of time. These time periods are distinguished by their point in time and their duration. Notable subclasses include :Date, :Month, and :TimeInstant."""^^xsd:string ;
+        :exampleSubclass :Date, :TimeInstant, :Month;
+.
+
+:WorkRelationship a owl:Class ;
+	rdfs:label "work relationship"^^xsd:string ;
+        skos:prefLabel "work relationship"@en ;
+	rdfs:subClassOf :Relationship ;
+	rdfs:comment """:WorkRelationship is the class of all professional relationships. This does not refer to a romantic work relationship, although it doesn't exclude it, either. Similarly, such a relationship is orthogonal to :Friendship."""^^xsd:string ;
+        :exampleSubclass "";
+        :exampleInstance "";
+.
+
+#################################################################
+#    Properties
+#################################################################
+
+
+#################################################################
+#    		Object Properties
+#################################################################
+
+:birthDate a owl:ObjectProperty ;
+	rdfs:label "birth date"^^xsd:string ;
+        skos:prefLabel "was born on"@en ;
+	rdfs:subPropertyOf :timeOf ;
+        rdfs:domain :Person ;
+        rdfs:range :TimeInterval ;
+	rdfs:comment """(:Person1 :birthDate :TimeInterval1) means that Person1 was born on TimeInterval1. For example, (:CaseyHart :birthDate [:universalDate \"1986-08-02\"^^xsd:date])."""^^xsd:string ;
+        :exampleTriple ":CaseyHart :birthDate [:universalDate \"1986-08-02\"^^xsd:date]"^^xsd:string ;
+.
+
+:employedIn a owl:ObjectProperty ;
+	rdfs:label "employed in"^^xsd:string ;
+        skos:prefLabel "is the employee in"@en ;
+	rdfs:subPropertyOf :situationInvolves ;
+        rdfs:domain :Person ;
+        rdfs:range :Employment ;
+	rdfs:comment """(:Person1 :employedIn :Employment1) means that Person1 is the employee in Employment1. For example, (:Bill :employedIn :BillsWalmartJob)."""^^xsd:string ;
+        :exampleTriple ":Bill :employedIn :BillsWalmartJob"^^xsd:string ;
+.
+
+:endTime a owl:ObjectProperty ;
+	rdfs:label "end time"^^xsd:string ;
+        skos:prefLabel "ended at"@en ;
+	rdfs:subPropertyOf :situationTime ;
+        rdfs:domain :Situation ;
+        rdfs:range :TimeInterval ;
+	rdfs:comment """(:Situation1 :endTimet :TimeInterval1) means that Situation1 ended at TimeInterval1. For example, (:2023NBAFinalsGame1 :endTime [:universalDate \"2023-04-01T19:00:00\"^^xsd:dateTime)."""^^xsd:string ;
+        :exampleTriple ":2023NBAFinalsGame1 :endTime [:universalDate \"2023-04-01T19:00:00\"^^xsd:dateTime"^^xsd:string ;
+.
+
+:eventInvolves a owl:ObjectProperty ;
+	rdfs:label "event involves"^^xsd:string ;
+        skos:prefLabel "involves"@en ;
+	rdfs:subPropertyOf :situationInvolves ;
+        rdfs:domain :Event ;
+        rdfs:range owl:Thing ;
+	rdfs:comment """(:Event1 :eventInvolves :Thing1) means that Event1 involves Thing1. This is the typed (to :Event) subproperty of :situationInvolves. Similarly, one should use subproperties and not this one whenever possible, reserving this for a query predicate."""^^xsd:string ;
+.
+
+:situationInvolves a owl:ObjectProperty ;
+	rdfs:label "situation involves"^^xsd:string ;
+        skos:prefLabel "involves"@en ;
+	rdfs:domain :Situation ;
+        rdfs:range owl:Thing ;
+	rdfs:comment """(:Situation1 :situationInvolves :Thing1) means that Situation1 involves Thing1. For example, (:BasketballGame :situationInvolves :TimDonaghy).
+
+This is a VERY general query property, and a more precise one should almost always be used."""^^xsd:string ;
+        :exampleTriple ":BasketballGame :situationInvolves :TimDonaghy"^^xsd:string ;
+.
+
+:situationTime a owl:ObjectProperty ;
+	rdfs:label "situation time"^^xsd:string ;
+        skos:prefLabel "occurs at/on"@en ;
+	rdfs:subPropertyOf :timeOf ;
+        rdfs:domain :Situation ;
+        rdfs:range :TimeInterval ;
+	rdfs:comment """(:Situation1 :situationTime :TimeInterval1) means that Situation1 occurs at TimeInterval1. This is the typed subproperty of :timeOf that links instances of :Situation to salient times. This property is more vague than explicitly using :startTime and/or :endTime, but the assumption will often be that the interval covers the entire duration of the situation at hand."""^^xsd:string ;
+.
+
+:eventParticipant a owl:ObjectProperty ;
+	rdfs:label "event participant"^^xsd:string ;
+        skos:prefLabel "included"@en ;
+	rdfs:subPropertyOf :eventInvolves ;
+        rdfs:domain :Event ;
+        rdfs:range :Agent ;
+	rdfs:comment """(:Event1 :eventParticipant :Agent1) means that Event1 included Agent1. For example, (:JobInterview001 :eventParticipant :CaseyHart)."""^^xsd:string ;
+        :exampleTriple ":JobInterview001 :eventParticipant :CaseyHart"^^xsd:string ;
+.
+
+:hasAddress a owl:ObjectProperty ;
+	rdfs:label "has address"^^xsd:string ;
+        skos:prefLabel "has the address"@en ;
+	rdfs:domain :Person ;
+        rdfs:range :Place ;
+	rdfs:comment """(:Person1 :hasAddress :Address1) means that Person1 has the address Address1. For example, (:CaseyHart :hasAddress [:addressString \"215 Mustang Mesa\"^^xsd:string ]).
+	See :Address and the properties under :address for ways to flesh out the address. This almost always uses a blank node, but there's nothing wrong with reifying the address, either."""^^xsd:string ;
+        :exampleTriple ":CaseyHart :hasAddress [:addressString \"215 Mustang Mesa\"^^xsd:string ]"^^xsd:string ;
+.
+
+:involvedInSituation a owl:ObjectProperty ;
+	rdfs:label "involved in event"^^xsd:string ;
+        skos:prefLabel "is involved in"@en ;
+	owl:inverseOf :situationInvolves ;
+	rdfs:domain owl:Thing ;
+        rdfs:range :Event ;
+	rdfs:comment """This is the inverse of :situationInvolves."""^^xsd:string ;
+.
+
+:relationshipParty a owl:ObjectProperty ;
+	rdfs:label "relationship party"^^xsd:string ;
+        skos:prefLabel "includes"@en ;
+	rdfs:subPropertyOf :situationInvolves ;
+        rdfs:domain :Relationship ;
+        rdfs:range :Agent ;
+	rdfs:comment """(:Relationship1 :relationshipParty :Agent1) means that Relationship1 includes Agent1. For example, (:MyRelationshipWithNicole :relationshipParty :NicoleHart). Every relationship should have exactly two of these assertions for unique individuals."""^^xsd:string ;
+        :exampleTriple ":MyRelationshipWithNicole :relationshipParty :NicoleHart"^^xsd:string ;
+.
+
+:startTime a owl:ObjectProperty ;
+	rdfs:label "start time"^^xsd:string ;
+        skos:prefLabel "started at"@en ;
+	rdfs:subPropertyOf :situationTime ;
+        rdfs:domain :Situation ;
+        rdfs:range :TimeInterval ;
+	rdfs:comment """(:Situation1 :startTime :TimeInterval1) means that Situation1 started at TimeInterval1. For example, (:2023NBAFinalsGame1 :startTime [:universalDate \"2023-04-01T16:00:00\"^^xsd:dateTime)."""^^xsd:string ;
+        :exampleTriple ":2023NBAFinalsGame1 :startTime [:universalDate \"2023-04-01T16:00:00\"^^xsd:dateTime"^^xsd:string ;
+.
+
+:timeOf a owl:ObjectProperty ;
+	rdfs:label "time of"^^xsd:string ;
+        skos:prefLabel "is linked to"@en ;
+	rdfs:domain owl:Thing ;
+        rdfs:range :TimeInterval ;
+	rdfs:comment """(:Thing1 :timeOf :TimeInterval1) means that Thing1 is linked to TimeInterval1. For example, (:MyWedding :timeOf :July272008). This property is very general, and should be used as a query predicate rather than for making assertions. Instead, prefer subproperties the more closely match what you want to express."""^^xsd:string ;
+        :exampleTriple ":MyWedding :timeOf :July272008"^^xsd:string ;
+.
+
+#################################################################
+#    		Datatype Properties
+#################################################################
+
+:address a owl:DatatypeProperty ;
+	rdfs:label "address"^^xsd:string ;
+        skos:prefLabel "has the address"@en ;
+	rdfs:domain [owl:unionOf (:Place :Agent)] ;
+        rdfs:range xsd:string ;
+	rdfs:comment """(:Place1 :address \"STRING\"xsd:string) means that Place1 has the address STRING. For example, (:CaseysAddress :address \"215 Mustang Mesa, Lberty Hill TX, 78642\"^^xsd:string).
+	Subproperties are almost always preferred; this is best as a query predicate. Because of the generality of this property, no formatting constraints are enforced. However, a good rule of thumb if you are using it is to put what you'd put on an envelope to get the post office to deliver it to the right place."""^^xsd:string ;
+        :exampleTriple ":CaseysAddress :address \"215 Mustang Mesa, Lberty Hill TX, 78642\"^^xsd:string"^^xsd:string ;
+.
+
+:address-city a owl:DatatypeProperty ;
+	rdfs:label "city address"^^xsd:string ;
+        skos:prefLabel "has the city address"@en ;
+	rdfs:subPropertyOf :address ;
+	rdfs:comment """(:Thing1 :address-city \"STRING\"xsd:string) means that Thing1 has the city address STRING. For example, (:CaseysAddress :address-city \"Liberty Hill\"^^xsd:string)."""^^xsd:string ;
+        :exampleTriple ":CaseysAddress :address-city \"Liberty Hill\"^^xsd:string"^^xsd:string ;
+.
+
+:address-state a owl:DatatypeProperty ;
+	rdfs:label "state address"^^xsd:string ;
+        skos:prefLabel "has the state address"@en ;
+	rdfs:subPropertyOf :address ;
+	rdfs:comment """(:Thing1 :address-state \"STRING\"xsd:string) means that Thing1 has the state address STRING. For example, (:CaseysAddress :address-state \"TX\"^^xsd:string). It is permissible to put either the abbrevation (e.g. TX) or full state name (e.g. Texas)."""^^xsd:string ;
+        :exampleTriple ":CaseysAddress :address-state \"TX\"^^xsd:string"^^xsd:string ;
+.
+
+:address-street a owl:DatatypeProperty ;
+	rdfs:label "address-street"^^xsd:string ;
+        skos:prefLabel "has the street address"@en ;
+	rdfs:subPropertyOf :address ;
+	rdfs:comment """(:Thing1 :address-street \"STRING\"xsd:string) means that Thing1 has the street address STRING. For example, (:CaseysAddress :address-street \"215 Mustang Mesa\"^^xsd:string)."""^^xsd:string ;
+        :exampleTriple ":CaseysAddress :address-street \"215 Mustang Mesa\"^^xsd:string"^^xsd:string ;
+.
+
+:name a owl:DatatypeProperty ;
+	rdfs:label "name"^^xsd:string ;
+        skos:prefLabel "is named"@en ;
+	rdfs:domain owl:Thing ;
+        rdfs:range xsd:string ;
+	rdfs:comment """(:Thing1 :name \"STRING\"^^xsd:string) means that Thing1 is named STRING. For example, (:MyBlueCar :name \"Baby Blue\"^^xsd:string)."""^^xsd:string ;
+        :exampleTriple ":MyBlueCar :name \"Baby Blue\"^^xsd:string"^^xsd:string ;
+.
+
+:name-first a owl:DatatypeProperty ;
+	rdfs:label "first name"^^xsd:string ;
+        skos:prefLabel "has the first name"@en ;
+	rdfs:subPropertyOf :name ;
+        rdfs:domain :Person ;
+        rdfs:range xsd:string ;
+	rdfs:comment """(:Person1 :name-first \"THING\"owl:Thing) means that Person1 has the first name THING. For example, (:LebronJames :name-first \"Lebron\"^^owl:Thing)."""^^xsd:string ;
+        :exampleTriple ":LebronJames :name-first \"Lebron\"^^owl:Thing"^^xsd:string ;
+.
+
+:name-middle a owl:DatatypeProperty ;
+        rdfs:label "middle name"^^xsd:string ;
+	skos:prefLabel "has the middle name"@en ;
+	rdfs:subPropertyOf :name ;
+	rdfs:domain :Person ;
+	rdfs:range xsd:string ;
+        rdfs:comment """(:Person1 :name-middle \"STRING\"xsd:string) means that Person1 has the middle name STRING. For example, (:LebronJames :name-middle \"Raymone\"^^xsd:string)."""^^xsd:string ;
+        :exampleTriple ":LebronJames :name-middle \"Raymone\"^^xsd:string"^^xsd:string ;
+.	
+
+:name-last a owl:DatatypeProperty ;
+	rdfs:label "last name"^^xsd:string ;
+        skos:prefLabel "has the last name"@en ;
+	rdfs:subPropertyOf :name ;
+        rdfs:domain :Person ;
+        rdfs:range xsd:string ;
+	rdfs:comment """(:Person1 :name-last \"STRING\"xsd:string) means that Person1 has the last name STRING. For example, (:LebronJames :name-last \"James\"^^xsd:string)."""^^xsd:string ;
+        :exampleTriple ":LebronJames :name-last \"James\"^^xsd:string"^^xsd:string ;
+.
+
+:name-nickname a owl:DatatypeProperty ;
+	rdfs:label "nickname"^^xsd:string ;
+        skos:prefLabel "is nicknamed"@en ;
+	rdfs:subPropertyOf :name ;
+        rdfs:domain :Person ;
+        rdfs:range xsd:string ;
+	rdfs:comment """(:Person1 :name-nickname \"STRING\"xsd:string) means that Person1 is nicknamed STRING. For example, (:LebronJames :name-nickname \"King James\"^^xsd:string)."""^^xsd:string ;
+        :exampleTriple ":LebronJames :name-nickname \"King James\"^^xsd:string"^^xsd:string ;
+.
+
+:universalDate a owl:DatatypeProperty ;
+	rdfs:label "universal date"^^xsd:string ;
+        skos:prefLabel "has the value"@en ;
+	rdfs:domain :TimeInterval ;
+        rdfs:range xsd:date ;
+	rdfs:comment """(:TimeInterval1 :universalDate \"DATE\"xsd:date) means that TimeInterval1 has the value DATE. For example, (:Jan222022 :universalDate \"2022-01-22\"^^xsd:date)."""^^xsd:string ;
+        :exampleTriple ":Jan222022 :universalDate \"2022-01-22\"^^xsd:date"^^xsd:string ;
+.
+
+:universalDateTime a owl:DatatypeProperty ;
+	rdfs:label "universal date time"^^xsd:string ;
+        skos:prefLabel "has the value"@en ;
+	rdfs:domain :TimeInterval ;
+        rdfs:range xsd:dateTime ;
+	rdfs:comment """(:TimeInterval1 :universalDateTime \"DATETIME\"xsd:dateTime) means that TimeInterval1 has the value DATETIME. For example, (:Jan2022022At5PM :universalDateTime \"2022-01-22T17:00:00\"^^xsd:dateTime)."""^^xsd:string ;
+        :exampleTriple ":Jan2022022At5PM :universalDateTime \"2022-01-22T17:00:00\"^^xsd:dateTime"^^xsd:string ;
+.
+
+:zipCode a owl:DatatypeProperty ;
+	rdfs:label "zip code"^^xsd:string ;
+        skos:prefLabel "has the zip code"@en ;
+	rdfs:subPropertyOf :address ;
+	rdfs:comment """(:Place1 :zipCode \"STRING\"xsd:string) means that Place1 has the zip code STRING. For example, (:CaseysAddress :zipCode \"78642\"^^xsd:string)."""^^xsd:string ;
+        :exampleTriple ":CaseysAddress :zipCode \"78642\"^^xsd:string"^^xsd:string ;
+.
+
+#################################################################
+#    		Annotation Properties
+#################################################################
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+
+#################################################################
+#    "Data"
+#################################################################
+
+#### CONTACTS AND RELATIONSHIPS
+
+:CaseyHart a :Person ;
+       :name-first "Casey" ;
+       :name-last "Hart" ;
+       :hasAddress [:address-street "175 Bryant Lane" ;
+       		    :address-city "Roseburg" ;
+		    :address-state "Oregon" ;
+		    :zipCode "97471" ] ;
+       :emailAddress "CaseyThomasHart@gmail.com", "cthart@amazon.com" ;
+       :employedIn [a :Employment ;
+       		    :startTime [:universalDate "2022-09-06"^^xsd:date ] ;
+		    :jobTitle "Ontologist II" ;] ;
+       :birthDate [:universalDate "1986-08-02"^^xsd:date] ;
+.
+
+:DanicaWestgard a :Person ;
+       :name-first "Danica" ;
+       :name-last "Westgard" ;
+       :emailAddress "danica.westgard@yahoo.com" ;
+       :phoneNumber "(832)729-3501" ;
+       rdfs:comment """Danica is a data scientist and former drilling engineer who loves to branch out and learn new things. She lives in the Houston area and recently got married in Mexico (Fall 2022). Joyful and enthusiastic.""" ;
+.
+
+:DanicaWestgardRelationship a :WorkRelationship;
+       :startTime [:universalDate "2018-01-01"^^xsd:date ;];
+       rdfs:comment """We met at SWN when she was a drilling engineer turning into a data scientist. We hit it off, and she put up with staying in contact with me over the years.""" ;
+       :relationshipParty :CaseyHart, :DanicaWestgard ;
+       :desiredInteractionFrequency [:decimalValue "2"^^xsd:integer ; :numeratorUnit :_count ; :denominatorUnit :_year ;] ;
+.
+
+:DanMohan a :Person ;
+	rdfs:label "dan mohan"^^xsd:string ;
+        skos:prefLabel "danmohan"@en ;
+	rdfs:comment """:DanMohan is an instance of :Person."""^^xsd:string ;
+.
+
+:OraLasilla a :Person ;
+       :name-first "Ora" ;
+       :name-last "Lasilla" ;
+       :emailAddress "ora@amazon.com" ;
+.
+
+:OraLasillaRelationship a :WorkRelationship ;
+       :startTime [:universalDate "2021-10-27"^^xsd:date ] ;
+       rdfs:comment """I met Ora when Olive was considering using Neptune. He's smart and personable, and so since then we have periodically talked about semantic stuff.""" ;
+       :relationshipParty :CaseyHart , :OraLasilla ;
+       :desiredInteractionFrequency [:decimalValue "3"^^xsd:integer ; :numeratorUnit :_count ; :denominatorUnit :_year ;] ;
+.
+
+#### EVENTS
+
+:EF2403AE-2BDD-491A-AA48-3F6E7A6A296F a :Meeting-InPerson ;
+      :eventParticipant :CaseyHart, :OraLasilla ;
+      :dateOfEvent [:universalDate "2022-11-02"^^xsd:date ] ;
+      rdfs:comment "Ora gave a talk at Knowledge Con 2022 about the state of modern data management. In short, he wants more semantics to be explicit. I had issues with whether he clearly defined semantics, and maybe some thoughts on Chinese Room-esque system boundaries here." ;      
+.
